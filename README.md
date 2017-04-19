@@ -6,6 +6,6 @@ Practicing for Google Code Jams.
 
 ## Note
 
-googleSnippet.txt is a file with good Google Question starters codes I created using C language.
+googleSnippet.txt is a file with good Google Question starter codes I created using C language.
 
 
