@@ -1,0 +1,278 @@
+//GOOGLE SNIPPET PREP
+
+//note randomedit.c in lab 9 - comp 2717 has good code to write summary data - use it for github stuff
+
+//scanf get rid of \n after scanning
+
+double transaction; 
+scanf( "%lf", &transaction );
+while (getchar() != '\n');
+
+//end of scanf
+
+
+
+//using sscanf to check data input
+// lab10solution.c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+#include <stdlib.h>
+#include <time.h>
+
+int main( int argc, char *argv[] )
+{
+	int elementCount;
+	int *arrayBase;
+	int counter;
+	int elementValue;
+	int currentSize;
+	int previousSize;
+	
+	if (argc != 3)
+	{
+		printf("USAGE: program 2 9\n");
+		return 1;
+	}
+
+	if (!sscanf(argv[1], "%d", &currentSize))
+	{
+		printf("Arguments must be numeric (int)\n");
+		return 1;
+	}
+
+	if (!sscanf(argv[2], "%d", &elementCount))
+	{
+		printf("Arguments must be numeric (int)\n");
+		return 1;
+	}
+
+	if (currentSize < 1)
+	{
+		printf("Initial size must be at least 1\n");
+		return 1;
+	}
+
+	srand((int) time(NULL));
+	
+	arrayBase = (int*)calloc(currentSize, sizeof(int));
+	
+	printf("Initial array size: %d\n", currentSize);
+	printf("Adding: %d %s\n", elementCount, elementCount == 1 ? "element" : "elements");
+
+	elementValue = rand();
+	elementValue %= 99;
+	printf("Adding value: %2d Element Count: %2d\n", elementValue, 1);
+	arrayBase[0] = elementValue;
+
+	for (counter = 1; counter < elementCount; counter++)
+	{
+		if (counter == currentSize)
+		{
+			previousSize = currentSize;
+			currentSize *= 2;
+			printf("Increasing array size: from %d elements to %d elements\n", previousSize, currentSize);
+			arrayBase = (int*)realloc(arrayBase, currentSize * sizeof(int));
+		}
+
+		elementValue = rand();
+		elementValue %= 99;
+		printf("Adding value: %2d Element Count: %2d\n", elementValue, counter + 1);
+		arrayBase[counter] = elementValue;
+	}
+
+	// output section
+	if (elementCount > 0)
+	{
+		printf("%s %d", elementCount == 1 ? "\nValue added is:" : "\nValues added are:" , arrayBase[0]);
+	}
+	else
+	{
+		printf("No array elements added");
+	}
+
+	if (elementCount > 1)
+	{ 
+		for (counter = 1; counter < elementCount; counter++)
+		{
+			printf(", %d", arrayBase[counter]);
+		}
+	}
+
+	printf("\n\n");
+
+	free(arrayBase);
+
+	return 0;
+}
+
+
+
+
+
+
+//!end of using sscanf
+
+//READ FROM CONSOLE
+
+// redirectin.c
+#define _CRT_SECURE_NO_WARNINGS
+#define BUFFER_SIZE 1000
+
+#include <stdio.h>
+
+int main( void )
+{ 
+    char data[BUFFER_SIZE + 1]; // add 1 for null terminater
+    
+    fgets(data, BUFFER_SIZE, stdin);
+    
+    while (!feof(stdin))
+    {
+        printf("Input: %s", data);
+        fgets(data, BUFFER_SIZE, stdin);
+    }
+
+    return 0;
+}
+
+//!END READ FROM CONSOLE
+
+
+
+
+//READ FROM FILE
+
+// seqread.c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+
+int main( void )
+{ 
+   int account;  
+   char name[ 30 ];
+   double balance;
+
+   FILE *fpClient; 
+
+   // fopen opens file; exits program if file cannot be opened 
+   if ( ( fpClient = fopen( "clients.txt", "r" ) ) == NULL ) 
+   {
+      printf( "File could not be opened\n" );
+   } 
+   else
+   {
+      printf( "%-10s%-13s%s\n", "Account", "Name", "Balance" );
+      fscanf( fpClient, "%d %s %lf", &account, name, &balance );
+
+      // while not end of file
+      while ( !feof( fpClient ) )
+      { 
+    //	 fscanf( fpClient, "%d %s %lf", &account, name, &balance );
+         printf( "%-10d%-13s%7.2f\n", account, name, balance );
+         fscanf( fpClient, "%d %s %lf", &account, name, &balance );
+      }
+
+      fclose( fpClient ); // fclose closes the file
+   }
+
+   return 0;
+
+}
+
+//!END OF READ FROM FILE
+
+
+//WRITE TO FILE AFTER ASKING FOR INPUT FROM CONSOLE
+
+// seqcreate.c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+
+int main( void )
+{ 
+   int account;   
+   char name[ 30 ];
+   double balance; 
+
+   FILE *fpClient;
+
+   // fopen opens file. Exit program if unable to create file 
+   if ( ( fpClient = fopen( "clients.txt", "w" ) ) == NULL )
+   {
+      printf( "File could not be opened\n" );
+   }
+   else
+   { 
+      printf( "Enter the account number, account name, and balance. (separated by spaces)\n" );
+      printf( "Enter EOF to end input. (Crtl-Z)\n" );
+      printf( "? " );
+      scanf( "%d %s %lf", &account, name, &balance );
+      //	  while (getchar() != '\n');
+
+      // write account, name and balance into file with fprintf
+      while ( !feof( stdin ) )
+      { 
+         fprintf( fpClient, "%d %s %.2f\n", account, name, balance );
+         printf( "? " );
+         scanf( "%d %s %lf", &account, name, &balance );
+           while (getchar() != '\n');
+      }
+      
+      fclose( fpClient );
+   }
+   return 0; 
+}
+
+//!END OF WRITE TO FILE AFTER ASKING FOR INPUT FROM CONSOLE
+
+
+
+//START OF GETTING ARGUMENT FROM CONSOLE
+
+// commandLineArgs.c
+#include <stdio.h>
+
+int main(int argc, char *argv[])
+{
+	for (int index = 0; index < argc; index++)
+	{
+		printf("[%d] - %s\n", index, argv[index]);
+	}
+
+	return 0;
+}
+//!END OF GETTING ARGUMENT FROM CONSOLE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
